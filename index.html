@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#3498db" />
+
+<!-- iOS向け設定 -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<link rel="apple-touch-icon" href="icon.png" />
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>希釈量計算（テンキー）</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      margin: 0;
+      padding: 15px;
+      font-size: 14px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .input-label {
+      font-weight: bold;
+    }
+    .input-field {
+      padding: 6px 8px;
+      font-size: 1.1em;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #fff;
+      text-align: right;
+      min-height: 32px;
+      user-select: none;
+    }
+    .input-field.selected {
+      border: 2px solid #3498db;
+      outline: none;
+    }
+    .numpad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      max-width: 260px;
+      margin: 0 auto 18px;
+    }
+    .numpad button {
+      padding: 14px 0;
+      font-size: 1.2em;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      user-select: none;
+    }
+    .numpad button:hover {
+      background-color: #2980b9;
+    }
+    .actions {
+      text-align: center;
+    }
+    .actions button {
+      padding: 10px 0;
+      font-size: 1.1em;
+      width: 100%;
+      border-radius: 10px;
+    }
+    #result {
+      font-size: 1.3em;
+      font-weight: bold;
+      margin-top: 18px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h2>希釈量の計算</h2>
+
+  <div class="input-group">
+    <div>
+      <label class="input-label">分析値：</label>
+      <div id="a" class="input-field" onclick="selectField('a')"></div>
+    </div>
+    <div>
+      <label class="input-label">浴量 (L)：</label>
+      <div id="b" class="input-field" onclick="selectField('b')"></div>
+    </div>
+    <div>
+      <label class="input-label">狙い値：</label>
+      <div id="d" class="input-field" onclick="selectField('d')"></div>
+    </div>
+  </div>
+
+  <div class="numpad">
+    <button onclick="appendValue('7')">7</button>
+    <button onclick="appendValue('8')">8</button>
+    <button onclick="appendValue('9')">9</button>
+    <button onclick="appendValue('4')">4</button>
+    <button onclick="appendValue('5')">5</button>
+    <button onclick="appendValue('6')">6</button>
+    <button onclick="appendValue('1')">1</button>
+    <button onclick="appendValue('2')">2</button>
+    <button onclick="appendValue('3')">3</button>
+    <button onclick="appendValue('0')">0</button>
+    <button onclick="appendValue('.')">.</button>
+    <button onclick="backspace()">⌫</button>
+  </div>
+
+  <div class="actions">
+    <button onclick="calc()">希釈量を計算</button>
+  </div>
+
+  <div id="result">---</div>
+
+  <script>
+    let selectedField = null;
+
+    function selectField(id) {
+      if (selectedField) {
+        document.getElementById(selectedField).classList.remove('selected');
+      }
+      selectedField = id;
+      const field = document.getElementById(id);
+      field.classList.add('selected');
+      field.textContent = ""; // タップ時に空欄にする
+    }
+
+    function appendValue(value) {
+      if (!selectedField) return;
+      const field = document.getElementById(selectedField);
+      field.textContent += value;
+    }
+
+    function backspace() {
+      if (!selectedField) return;
+      const field = document.getElementById(selectedField);
+      field.textContent = field.textContent.slice(0, -1);
+    }
+
+    function calc() {
+      const a = parseFloat(document.getElementById("a").textContent);
+      const b = parseFloat(document.getElementById("b").textContent);
+      const d = parseFloat(document.getElementById("d").textContent);
+
+      if (isNaN(a) || isNaN(b) || isNaN(d)) {
+        document.getElementById("result").textContent = "すべて入力してください";
+        return;
+      }
+      if (a === 0) {
+        document.getElementById("result").textContent = "分析値が0では計算できません";
+        return;
+      }
+
+      const c = b - (d * b / a);
+      document.getElementById("result").textContent = "希釈量：" + c.toFixed(3) + " L";
+    }
+
+    window.onload = () => {
+      selectField("a");
+    };
+  </script>
+</body>
+</html>

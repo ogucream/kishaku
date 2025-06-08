@@ -1,0 +1,46 @@
+
+body {
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 15px;
+}
+h2 {
+  text-align: center;
+}
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.input-field {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  text-align: right;
+  min-height: 32px;
+  background: white;
+}
+.input-field.selected {
+  border: 2px solid #3498db;
+}
+.numpad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  max-width: 260px;
+  margin: 0 auto;
+}
+.numpad button {
+  padding: 12px;
+  font-size: 1.2em;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+}
+.actions {
+  text-align: center;
+  margin-top: 10px;
+}
